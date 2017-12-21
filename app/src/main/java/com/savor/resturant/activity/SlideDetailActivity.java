@@ -193,6 +193,7 @@ public class SlideDetailActivity extends BaseActivity implements InitViews, View
     private boolean isForground;
     /**请求房间列表的失败次数*/
     private int erroCount;
+    private List<RoomInfo> roomList;
 
     private void handleImageUploadResponse(Object obj) {
         if (obj instanceof ImageProResonse) {
@@ -432,9 +433,17 @@ public class SlideDetailActivity extends BaseActivity implements InitViews, View
         mRoomListView.setLayoutManager(roomLayoutManager);
         roomListAdapter = new RoomListAdapter(this);
         mRoomListView.setAdapter(roomListAdapter);
-        List<RoomInfo> roomList = mSession.getRoomList();
+        roomList = new ArrayList<>();
+        TvBoxSSDPInfo tvBoxSSDPInfo = mSession.getTvBoxSSDPInfo();
+        if(tvBoxSSDPInfo!=null&&!TextUtils.isEmpty(tvBoxSSDPInfo.getBoxIp())) {
+            RoomInfo roomInfo = new RoomInfo();
+            roomInfo.setBox_ip(tvBoxSSDPInfo.getBoxIp());
+            roomInfo.setBox_name("演示版电视");
+            roomInfo.setBox_mac("FCD5D900B8B6");
+            roomList.add(roomInfo);
+        }
         mRoomListView.addItemDecoration(new SpacesItemDecoration(leftRight, topBottom, getResources().getColor(R.color.white)));
-        if(roomList!=null && roomList.size()>0) {
+        if(roomList !=null && roomList.size()>0) {
             roomListAdapter.setData(roomList);
         }
     }
@@ -1201,10 +1210,8 @@ public class SlideDetailActivity extends BaseActivity implements InitViews, View
                         if(mProgressBarDialog!=null) {
                             mProgressBarDialog.updatePercent("",100,slideType);
                         }
-                        setLog(slideSettingsMediaBeanResultList.size()+"","1",settingDialog.getLoopTime()*60+"","1");
                         break;
                     case IMAGE:
-                        setLog(slideSettingsMediaBeanResultList.size()+"","1",settingDialog.getLoopTime()*60+"","2");
                         mProgressBarDialog.dismiss();
                         break;
                 }
@@ -1341,7 +1348,6 @@ public class SlideDetailActivity extends BaseActivity implements InitViews, View
                 break;
             case POST_IMAGE_PROJECTION_JSON:
 //                mRequestScreenDialog.dismiss();
-                setLog(slideSettingsMediaBeanResultList.size()+"","0",settingDialog.getLoopTime()*60+"","2");
                 if (obj instanceof ResponseErrorMessage) {
                     ResponseErrorMessage message = (ResponseErrorMessage) obj;
                     int code = message.getCode();
@@ -1363,7 +1369,6 @@ public class SlideDetailActivity extends BaseActivity implements InitViews, View
                 }
                 break;
             case POST_VIDEO_PROJECTION_JSON:
-                setLog(slideSettingsMediaBeanResultList.size()+"","0",settingDialog.getLoopTime()*60+"","1");
                 if (obj instanceof ResponseErrorMessage) {
                     ResponseErrorMessage message = (ResponseErrorMessage) obj;
                     int code = message.getCode();
@@ -1445,7 +1450,6 @@ public class SlideDetailActivity extends BaseActivity implements InitViews, View
     }
 
     private void resetRoomList() {
-        List<RoomInfo> roomList = mSession.getRoomList();
         if(roomList!=null) {
             for(RoomInfo info:roomList) {
                 info.setSelected(false);
@@ -1529,61 +1533,67 @@ public class SlideDetailActivity extends BaseActivity implements InitViews, View
     @Override
     public void onRoomItemClick(RoomInfo roomInfo) {
         currentRoom = roomInfo;
-
         erroCount = 0;
-
-        // 判断是否连接同一个wifi并且同一网段
-        String wifiName = WifiUtil.getWifiName(this);
-        String box_name = roomInfo.getBox_name();
-//        String box_ip = "";
-        String box_ip = roomInfo.getBox_ip();
-        String localIp = WifiUtil.getLocalIp(this);
-        if(!TextUtils.isEmpty(wifiName)&&wifiName.equals(box_name)&&!TextUtils.isEmpty(localIp)&&WifiUtil.isInSameNetwork(localIp,box_ip)) {
-            hideRoomList();
-            showSlideSettings();
-        }else {
-            if(TextUtils.isEmpty(box_ip)) {
-//                showToast("与盒子失去联系");
-                SmallPlatInfoBySSDP smallPlatInfoBySSDP = mSession.getSmallPlatInfoBySSDP();
-                SmallPlatformByGetIp smallPlatformByGetIp = mSession.getmSmallPlatInfoByIp();
-                TvBoxSSDPInfo tvBoxSSDPInfo = mSession.getTvBoxSSDPInfo();
-                int hotelid = mSession.getHotelid();
-                String smallIp = "";
-                // 1.通过getip请求包间列表
-                if(smallPlatformByGetIp!=null&&!TextUtils.isEmpty(smallPlatformByGetIp.getLocalIp())) {
-                    smallIp = smallPlatformByGetIp.getLocalIp();
-                    String url = "http://"+smallIp+":8080";
-                    AppApi.getHotelRoomList(SlideDetailActivity.this,url,String.valueOf(hotelid),SlideDetailActivity.this);
-                }else {
-                    erroCount++;
-                }
-
-                // 通过小平台ssdp获取小平台地址请求房间列表
-                if(smallPlatInfoBySSDP!=null&&!TextUtils.isEmpty(smallPlatInfoBySSDP.getServerIp())) {
-                    smallIp = smallPlatInfoBySSDP.getServerIp();
-                    String url = "http://"+smallIp+":8080";
-                    AppApi.getHotelRoomList(SlideDetailActivity.this,url,String.valueOf(hotelid),SlideDetailActivity.this);
-                }else {
-                    erroCount++;
-                }
-
-                if(tvBoxSSDPInfo!=null&&!TextUtils.isEmpty(tvBoxSSDPInfo.getServerIp())) {
-                    smallIp = tvBoxSSDPInfo.getServerIp();
-                    String url = "http://"+smallIp+":8080";
-                    AppApi.getHotelRoomList(SlideDetailActivity.this,url,String.valueOf(hotelid),SlideDetailActivity.this);
-                }else {
-                    erroCount++;
-                    if(erroCount == 3) {
-                        showToast("包间电视连接失败，请检查是否开机");
-                    }
-                }
-
-            }else {
-                needLinkWifi = box_name;
-                hideRoomList();
-                showChangeWifiDialog(box_name);
-            }
+        TvBoxSSDPInfo tvBoxSSDPInfo = mSession.getTvBoxSSDPInfo();
+        if(tvBoxSSDPInfo!=null&&!TextUtils.isEmpty(tvBoxSSDPInfo.getBoxIp())) {
+            currentRoom.setBox_ip(tvBoxSSDPInfo.getBoxIp());
         }
+
+        hideRoomList();
+        showSlideSettings();
+
+//        SmallPlatInfoBySSDP smallPlatInfoBySSDP = mSession.getSmallPlatInfoBySSDP();
+//        SmallPlatformByGetIp smallPlatformByGetIp = mSession.getmSmallPlatInfoByIp();
+//        // 判断是否连接同一个wifi并且同一网段
+//        String wifiName = WifiUtil.getWifiName(this);
+//        String box_name = roomInfo.getBox_name();
+////        String box_ip = "";
+//        String box_ip = roomInfo.getBox_ip();
+//        String localIp = WifiUtil.getLocalIp(this);
+//        if(!TextUtils.isEmpty(wifiName)&&wifiName.equals(box_name)&&!TextUtils.isEmpty(localIp)&&WifiUtil.isInSameNetwork(localIp,box_ip)) {
+//            hideRoomList();
+//            showSlideSettings();
+//        }else {
+//            if(TextUtils.isEmpty(box_ip)) {
+////                showToast("与盒子失去联系");
+//
+//                int hotelid = mSession.getHotelid();
+//                String smallIp = "";
+//                // 1.通过getip请求包间列表
+//                if(smallPlatformByGetIp!=null&&!TextUtils.isEmpty(smallPlatformByGetIp.getLocalIp())) {
+//                    smallIp = smallPlatformByGetIp.getLocalIp();
+//                    String url = "http://"+smallIp+":8080";
+//                    AppApi.getHotelRoomList(SlideDetailActivity.this,url,String.valueOf(hotelid),SlideDetailActivity.this);
+//                }else {
+//                    erroCount++;
+//                }
+//
+//                // 通过小平台ssdp获取小平台地址请求房间列表
+//                if(smallPlatInfoBySSDP!=null&&!TextUtils.isEmpty(smallPlatInfoBySSDP.getServerIp())) {
+//                    smallIp = smallPlatInfoBySSDP.getServerIp();
+//                    String url = "http://"+smallIp+":8080";
+//                    AppApi.getHotelRoomList(SlideDetailActivity.this,url,String.valueOf(hotelid),SlideDetailActivity.this);
+//                }else {
+//                    erroCount++;
+//                }
+//
+//                if(tvBoxSSDPInfo!=null&&!TextUtils.isEmpty(tvBoxSSDPInfo.getServerIp())) {
+//                    smallIp = tvBoxSSDPInfo.getServerIp();
+//                    String url = "http://"+smallIp+":8080";
+//                    AppApi.getHotelRoomList(SlideDetailActivity.this,url,String.valueOf(hotelid),SlideDetailActivity.this);
+//                }else {
+//                    erroCount++;
+//                    if(erroCount == 3) {
+//                        showToast("包间电视连接失败，请检查是否开机");
+//                    }
+//                }
+//
+//            }else {
+//                needLinkWifi = box_name;
+//                hideRoomList();
+//                showChangeWifiDialog(box_name);
+//            }
+//        }
     }
 
     public void reConnect(RoomInfo roomInfo) {
@@ -1621,43 +1631,6 @@ public class SlideDetailActivity extends BaseActivity implements InitViews, View
         }else {
             startCheckWifiLinkedTimer();
         }
-    }
-
-
-    private void setLog(final String count, final String result, final String length, final String type){
-        final HotelBean hotel = mSession.getHotelBean();
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                AppApi.reportLog(mContext,
-                        hotel.getHotel_id()+"",
-                        "",hotel.getInvitation(),
-                        hotel.getTel(),
-                        currentRoom.getRoom_id(),
-                        count,//文件个数
-                        result,//投屏结果 1 成功；0失败
-                        length,//总时长
-                        type,//1视频 2照片 3特色菜 4宣传片 5欢迎词
-                        "",
-                        "",
-                        SlideDetailActivity.this
-                );
-            }
-        });
-
-//        AppApi.reportLog(mContext,
-//                hotel.getHotel_id()+"",
-//                "",hotel.getInvitation(),
-//                hotel.getTel(),
-//                currentRoom.getRoom_id(),
-//                "1",//文件个数
-//                "0",//投屏结果 1 成功；0失败
-//                "120",//总时长
-//                "5",//1视频 2照片 3特色菜 4宣传片 5欢迎词
-//                "",
-//                "",
-//                this
-//        );
     }
 
 }

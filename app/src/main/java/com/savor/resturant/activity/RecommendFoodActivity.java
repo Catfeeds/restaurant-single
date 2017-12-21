@@ -68,6 +68,7 @@ public class RecommendFoodActivity extends BaseActivity implements View.OnClickL
     private int erroCount;
     private ConstraintLayout mEmptyLayout;
     private TextView mEmptyHintTv;
+    private List<RoomInfo> roomList;
 
 
     /**
@@ -172,9 +173,18 @@ public class RecommendFoodActivity extends BaseActivity implements View.OnClickL
         mRoomListView.setLayoutManager(roomLayoutManager);
         roomListAdapter = new RoomListAdapter(this);
         mRoomListView.setAdapter(roomListAdapter);
-        List<RoomInfo> roomList = mSession.getRoomList();
+        roomList = new ArrayList<>();
+        TvBoxSSDPInfo tvBoxSSDPInfo = mSession.getTvBoxSSDPInfo();
+        if(tvBoxSSDPInfo!=null&&!TextUtils.isEmpty(tvBoxSSDPInfo.getBoxIp())) {
+            RoomInfo roomInfo = new RoomInfo();
+            roomInfo.setBox_ip(tvBoxSSDPInfo.getBoxIp());
+            roomInfo.setBox_name("演示版电视");
+            roomInfo.setBox_mac("FCD5D900B8B6");
+            roomList.add(roomInfo);
+        }
+
         mRoomListView.addItemDecoration(new SpacesItemDecoration(leftRight, topBottom, getResources().getColor(R.color.white)));
-        if(roomList!=null && roomList.size()>0) {
+        if(roomList !=null && roomList.size()>0) {
             roomListAdapter.setData(roomList);
         }
     }
@@ -362,6 +372,8 @@ public class RecommendFoodActivity extends BaseActivity implements View.OnClickL
     }
 
     private void hideRommList() {
+
+        resetRoomList();
         if(currentRoom!=null) {
             mTitleTv.setText(currentRoom.getBox_name());
         }else {
@@ -448,19 +460,24 @@ public class RecommendFoodActivity extends BaseActivity implements View.OnClickL
             return;
         }
         showLoadingLayout();
+        TvBoxSSDPInfo tvBoxSSDPInfo = mSession.getTvBoxSSDPInfo();
+        if(tvBoxSSDPInfo!=null) {
+            currentRoom.setBox_ip(tvBoxSSDPInfo.getBoxIp());
+        }
+
         SmallPlatformByGetIp smallPlatformByGetIp = mSession.getmSmallPlatInfoByIp();
         SmallPlatInfoBySSDP smallPlatInfoBySSDP = mSession.getSmallPlatInfoBySSDP();
-        TvBoxSSDPInfo tvBoxSSDPInfo = mSession.getTvBoxSSDPInfo();
         switch (currentType) {
-            case TYPE_RECOMMEND_FOODS:
-                proRecmmend(currentFoodAdvert.getFood_id(),smallPlatformByGetIp,smallPlatInfoBySSDP,tvBoxSSDPInfo,60*2+"");
+                case TYPE_RECOMMEND_FOODS:
+                    proRecmmend(currentFoodAdvert.getFood_id(),smallPlatformByGetIp,smallPlatInfoBySSDP,tvBoxSSDPInfo,60*2+"");
 //                AppApi.recommendPro(this, "", currentRoom.getBox_mac(), 1000 * 60 * 2 + "", currentFoodAdvert.getFood_id(), this);
-                break;
-            case TYPE_ADVERT:
-                proAdvert(currentFoodAdvert.getId(), smallPlatformByGetIp, smallPlatInfoBySSDP, tvBoxSSDPInfo);
+                    break;
+                case TYPE_ADVERT:
+                    proAdvert(currentFoodAdvert.getId(), smallPlatformByGetIp, smallPlatInfoBySSDP, tvBoxSSDPInfo);
 //                AppApi.adverPro(this, "", currentRoom.getBox_mac(), currentFoodAdvert.getId(), this);
-                break;
-        }
+                    break;
+            }
+
     }
 
     private void initRoomNotSelected() {
@@ -749,12 +766,12 @@ public class RecommendFoodActivity extends BaseActivity implements View.OnClickL
     }
 
     private void resetRoomList() {
-        List<RoomInfo> roomList = mSession.getRoomList();
         if(roomList!=null) {
             for(RoomInfo info:roomList) {
                 info.setSelected(false);
             }
         }
+        roomListAdapter.setData(roomList);
     }
 
     @Override
