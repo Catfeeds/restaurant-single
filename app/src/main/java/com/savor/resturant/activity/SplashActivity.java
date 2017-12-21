@@ -104,11 +104,12 @@ public class SplashActivity extends BaseActivity {
                     requsetPool.clear();
                     mSession.setRequestPool(requsetPool);
                     mSession.setHotelid(0);
+                    mSession.setTvBoxSSDPInfo(null);
                     LogUtils.d("savor:hotel 网络不可用重置酒店id为0");
-                    resetLinkStatus();
                     mHandler.removeMessages(MSG_STOP_SSDP);
                     stopSSdpService();
                     mSession.resetPlatform();
+                    resetLinkStatus();
                     break;
                 case CHECK_START_UP:
                     getStartUpSettings();
@@ -492,31 +493,31 @@ public class SplashActivity extends BaseActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if(intent.getAction().equals(SensePresenter.SMALL_PLATFORM)) {
-                LogUtils.d("savor:ssdp 收到小平台接受广播");
-                List<Object> requsetPool = mSession.getRequsetPool();
-                SmallPlatInfoBySSDP smallPlatInfoBySSDP = mSession.getSmallPlatInfoBySSDP();
-                TvBoxSSDPInfo tvBoxSSDPInfo = mSession.getTvBoxSSDPInfo();
-                if(smallPlatInfoBySSDP!=null&&!requsetPool.contains(smallPlatInfoBySSDP)) {
-                    String serverIp = smallPlatInfoBySSDP.getServerIp();
-                    int hotelId = smallPlatInfoBySSDP.getHotelId();
-                    String hid = "";
-                    try {
-                        hid = String.valueOf(hotelId);
-                    }catch (Exception e) {}
-                    String url = "http://"+serverIp+":8080";
-                    AppApi.getHotelRoomList(SplashActivity.this,url,hid,SplashActivity.this);
-                    requsetPool.add(smallPlatInfoBySSDP);
-                    mSession.setRequestPool(requsetPool);
-                }
-
-                if(tvBoxSSDPInfo!=null&&!requsetPool.contains(tvBoxSSDPInfo)) {
-                    String serverIp = tvBoxSSDPInfo.getServerIp();
-                    String hotelId = tvBoxSSDPInfo.getHotelId();
-                    String url = "http://"+serverIp+":8080";
-                    AppApi.getHotelRoomList(SplashActivity.this,url,hotelId,SplashActivity.this);
-                    requsetPool.add(tvBoxSSDPInfo);
-                    mSession.setRequestPool(requsetPool);
-                }
+//                LogUtils.d("savor:ssdp 收到小平台接受广播");
+//                List<Object> requsetPool = mSession.getRequsetPool();
+//                SmallPlatInfoBySSDP smallPlatInfoBySSDP = mSession.getSmallPlatInfoBySSDP();
+//                TvBoxSSDPInfo tvBoxSSDPInfo = mSession.getTvBoxSSDPInfo();
+//                if(smallPlatInfoBySSDP!=null&&!requsetPool.contains(smallPlatInfoBySSDP)) {
+//                    String serverIp = smallPlatInfoBySSDP.getServerIp();
+//                    int hotelId = smallPlatInfoBySSDP.getHotelId();
+//                    String hid = "";
+//                    try {
+//                        hid = String.valueOf(hotelId);
+//                    }catch (Exception e) {}
+//                    String url = "http://"+serverIp+":8080";
+//                    AppApi.getHotelRoomList(SplashActivity.this,url,hid,SplashActivity.this);
+//                    requsetPool.add(smallPlatInfoBySSDP);
+//                    mSession.setRequestPool(requsetPool);
+//                }
+//
+//                if(tvBoxSSDPInfo!=null&&!requsetPool.contains(tvBoxSSDPInfo)) {
+//                    String serverIp = tvBoxSSDPInfo.getServerIp();
+//                    String hotelId = tvBoxSSDPInfo.getHotelId();
+//                    String url = "http://"+serverIp+":8080";
+//                    AppApi.getHotelRoomList(SplashActivity.this,url,hotelId,SplashActivity.this);
+//                    requsetPool.add(tvBoxSSDPInfo);
+//                    mSession.setRequestPool(requsetPool);
+//                }
             }
         }
     }

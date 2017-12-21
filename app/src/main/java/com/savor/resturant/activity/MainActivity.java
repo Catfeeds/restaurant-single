@@ -198,8 +198,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     public void initWIfiHint() {
         // 判断当前是否是酒店环境
-        int hotelid = mSession.getHotelid();
-        if(hotelid>0) {
+        TvBoxSSDPInfo tvBoxSSDPInfo = mSession.getTvBoxSSDPInfo();
+        if(tvBoxSSDPInfo!=null) {
             mHintTv.setText("当前连接酒楼权茂北京菜");
             mHintTv.setTextColor(getResources().getColor(R.color.color_0da606));
             mHintTv.setCompoundDrawables(null,null,null,null);

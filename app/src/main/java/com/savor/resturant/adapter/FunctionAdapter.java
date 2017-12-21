@@ -16,6 +16,7 @@ import com.savor.resturant.activity.SlideListActivity;
 import com.savor.resturant.activity.WelComeSetTextActivity;
 import com.savor.resturant.bean.FunctionItem;
 import com.savor.resturant.bean.HotelBean;
+import com.savor.resturant.bean.TvBoxSSDPInfo;
 import com.savor.resturant.core.Session;
 import com.savor.resturant.utils.SlideManager;
 
@@ -58,8 +59,8 @@ public class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.Functi
         holder.ll_parent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int hotelid = Session.get(mContext).getHotelid();
-                if(hotelid>0) {
+                TvBoxSSDPInfo tvBoxSSDPInfo = Session.get(mContext).getTvBoxSSDPInfo();
+                if(tvBoxSSDPInfo!=null) {
                     Intent intent;
                     switch (type) {
                         case TYPE_RECOMMAND_FOODS:
