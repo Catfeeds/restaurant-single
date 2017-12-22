@@ -200,11 +200,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         // 判断当前是否是酒店环境
         TvBoxSSDPInfo tvBoxSSDPInfo = mSession.getTvBoxSSDPInfo();
         if(tvBoxSSDPInfo!=null) {
-            mHintTv.setText("当前连接酒楼权茂北京菜");
+            mHintTv.setText("当前已连接演示版电视");
             mHintTv.setTextColor(getResources().getColor(R.color.color_0da606));
             mHintTv.setCompoundDrawables(null,null,null,null);
         }else {
-            mHintTv.setText("请链接权茂北京菜的wifi后继续操作");
+            mHintTv.setText("未连接演示版电视");
             mHintTv.setTextColor(getResources().getColor(R.color.color_e43018));
             mHintTv.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ico_exe_hint),null,null,null);
 
