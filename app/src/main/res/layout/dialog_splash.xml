@@ -21,7 +21,7 @@
         app:layout_constraintVertical_bias="0.375" />
     <TextView
         android:textSize="11sp"
-        android:text="小热点餐厅端-试用版"
+        android:text="小热点餐厅端-演示版"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/app_text_type"

@@ -64,23 +64,21 @@ public class RecommendFoodAdapter extends RecyclerView.Adapter<RecommendFoodAdap
     public void onBindViewHolder(final RecommendHolder holder, int position) {
         final RecommendFoodAdvert recommendFoodAdvert = mData.get(position);
         final String oss_path = recommendFoodAdvert.getOss_path();
-        String chinese_name = recommendFoodAdvert.getChinese_name();
+        String advertName = recommendFoodAdvert.getName();
         String food_name = recommendFoodAdvert.getFood_name();
         String img_url = recommendFoodAdvert.getImg_url();
         String name = "";
-        String url = "";
+        int resId = recommendFoodAdvert.getResId();
         switch (type) {
             case TYPE_RECOMMEND_FOODS:
                 name = food_name;
-                url = oss_path;
                 break;
             case TYPE_ADVERT:
-                name = chinese_name;
-                url = img_url;
+                name = advertName;
                 break;
         }
 
-        Glide.with(mContext).load(url).asBitmap().dontAnimate().centerCrop().
+        Glide.with(mContext).load(resId).asBitmap().dontAnimate().centerCrop().
                 placeholder(R.drawable.empty_slide).
                 into(new MyBitmapImageViewTarget(holder.imageView));
 

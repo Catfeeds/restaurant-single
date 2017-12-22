@@ -33,6 +33,7 @@ public class RecommendFoodAdvert implements Serializable {
     private String duration;
     private String img_url;
     private boolean isSelected;
+    private int resId;
 
     @Override
     public String toString() {
@@ -49,6 +50,7 @@ public class RecommendFoodAdvert implements Serializable {
                 ", duration='" + duration + '\'' +
                 ", img_url='" + img_url + '\'' +
                 ", isSelected=" + isSelected +
+                ", resId=" + resId +
                 '}';
     }
 
@@ -59,40 +61,12 @@ public class RecommendFoodAdvert implements Serializable {
 
         RecommendFoodAdvert that = (RecommendFoodAdvert) o;
 
-        if (isSelected != that.isSelected) return false;
-        if (food_id != null ? !food_id.equals(that.food_id) : that.food_id != null) return false;
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (food_name != null ? !food_name.equals(that.food_name) : that.food_name != null)
-            return false;
-        if (oss_path != null ? !oss_path.equals(that.oss_path) : that.oss_path != null)
-            return false;
-        if (chinese_name != null ? !chinese_name.equals(that.chinese_name) : that.chinese_name != null)
-            return false;
-        if (md5 != null ? !md5.equals(that.md5) : that.md5 != null) return false;
-        if (md5_type != null ? !md5_type.equals(that.md5_type) : that.md5_type != null)
-            return false;
-        if (suffix != null ? !suffix.equals(that.suffix) : that.suffix != null) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (duration != null ? !duration.equals(that.duration) : that.duration != null)
-            return false;
-        return img_url != null ? img_url.equals(that.img_url) : that.img_url == null;
+        return food_name != null ? food_name.equals(that.food_name) : that.food_name == null;
     }
 
     @Override
     public int hashCode() {
-        int result = food_id != null ? food_id.hashCode() : 0;
-        result = 31 * result + (id != null ? id.hashCode() : 0);
-        result = 31 * result + (food_name != null ? food_name.hashCode() : 0);
-        result = 31 * result + (oss_path != null ? oss_path.hashCode() : 0);
-        result = 31 * result + (chinese_name != null ? chinese_name.hashCode() : 0);
-        result = 31 * result + (md5 != null ? md5.hashCode() : 0);
-        result = 31 * result + (md5_type != null ? md5_type.hashCode() : 0);
-        result = 31 * result + (suffix != null ? suffix.hashCode() : 0);
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (duration != null ? duration.hashCode() : 0);
-        result = 31 * result + (img_url != null ? img_url.hashCode() : 0);
-        result = 31 * result + (isSelected ? 1 : 0);
-        return result;
+        return food_name != null ? food_name.hashCode() : 0;
     }
 
     public String getFood_id() {
@@ -189,6 +163,14 @@ public class RecommendFoodAdvert implements Serializable {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
+    }
+
+    public int getResId() {
+        return resId;
+    }
+
+    public void setResId(int resId) {
+        this.resId = resId;
     }
 }
 

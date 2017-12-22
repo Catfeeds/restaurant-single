@@ -69,7 +69,57 @@ public class RecommendFoodActivity extends BaseActivity implements View.OnClickL
     private ConstraintLayout mEmptyLayout;
     private TextView mEmptyHintTv;
     private List<RoomInfo> roomList;
+    /**
+     * 推荐菜名称列表
+     */
+    private static final List<String> recommendNameList = new ArrayList<String>() {
+        {
+            add("鲍汁扣海参");
+            add("石锅海鲜拼");
+            add("海鲜拼盘");
+            add("江南熟醉大闸蟹");
+            add("京葱山药烧海参");
+            add("海鲜刺身拼盘");
+        }
+    };
 
+    /**
+     * 宣传片名称列表
+     */
+    private static final List<String> advertNameList = new ArrayList<String>() {
+        {
+            add("1");
+            add("2");
+            add("3");
+            add("4");
+        }
+    };
+
+    /**
+     * 推荐菜图片资源列表
+     */
+    private static final List<Integer> recommendResIdList = new ArrayList<Integer>() {
+                {
+                    add(R.drawable.baozhikouhaishen);
+                    add(R.drawable.shiguohaixianpin);
+                    add(R.drawable.haixianpinpan);
+                    add(R.drawable.jiangnanshuzuidazhaxie);
+                    add(R.drawable.jingcongshanyaoshaohaishen);
+                    add(R.drawable.haixiancishenpinpan);
+                }
+            };
+
+    /**
+     * 宣传片图片资源列表
+     */
+    private static final List<Integer> advertResIdList = new ArrayList<Integer>() {
+        {
+            add(R.drawable.haixianpinpan);
+            add(R.drawable.jiangnanshuzuidazhaxie);
+            add(R.drawable.jingcongshanyaoshaohaishen);
+            add(R.drawable.haixiancishenpinpan);
+        }
+    };
 
     /**
      * 操作类型，宣传片或者推荐菜
@@ -91,7 +141,7 @@ public class RecommendFoodActivity extends BaseActivity implements View.OnClickL
         setViews();
         setListeners();
 
-        getData();
+//        getData();
     }
 
     private void handleIntent() {
@@ -162,6 +212,86 @@ public class RecommendFoodActivity extends BaseActivity implements View.OnClickL
         int topBottom = DensityUtil.dip2px(this,15);
 
         mRecommendFoodsRlv.addItemDecoration(new SpacesItemDecoration(leftRight, topBottom, getResources().getColor(R.color.color_eeeeee)));
+
+        HotelBean hotelBean = mSession.getHotelBean();
+        List<RecommendFoodAdvert> recommendFoodAdvertList = new ArrayList<>();
+        switch (currentType) {
+            case TYPE_RECOMMEND_FOODS:
+                initRecoomedList(recommendFoodAdvertList);
+
+                RecommendProHistory recommendListHistory = mSession.getRecommendListHistory();
+                if(recommendListHistory!=null) {
+                    HotelBean hBean = recommendListHistory.getHotelBean();
+                    List<RecommendFoodAdvert> recmmendHistoryList = recommendListHistory.getRecmmendList();
+                    if(hBean!=null&&recmmendHistoryList!=null&&recmmendHistoryList.size()>0) {
+                        String hotel_id = hBean.getHotel_id();
+                        if(hotelBean.getHotel_id().equals(hotel_id)) {
+                            for(int i = 0;i<recmmendHistoryList.size();i++) {
+                                for(int j = 0;j<recommendFoodAdvertList.size();j++) {
+                                    RecommendFoodAdvert historyAdvert = recmmendHistoryList.get(i);
+                                    RecommendFoodAdvert foodAdvert = recommendFoodAdvertList.get(j);
+                                    if(historyAdvert!=null&&foodAdvert!=null) {
+                                        if(historyAdvert.getFood_name().equals(foodAdvert.getFood_name())) {
+                                            foodAdvert.setSelected(true);
+                                        }
+                                    }
+                                }
+                            }
+//                                        mRecommendAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+                break;
+            case TYPE_ADVERT:
+                initAdvertList(recommendFoodAdvertList);
+                AdvertProHistory advertProHistory = mSession.getAdvertProHistory();
+                if(advertProHistory!=null) {
+                    HotelBean hBean = advertProHistory.getHotelBean();
+                    List<RecommendFoodAdvert> advertHistoryList = advertProHistory.getAdvertList();
+                    if(hBean!=null&&advertHistoryList!=null&&advertHistoryList.size()>0) {
+                        String hotel_id = hBean.getHotel_id();
+                        if(hotelBean.getHotel_id().equals(hotel_id)) {
+                            for(int i = 0;i<advertHistoryList.size();i++) {
+                                for(int j = 0;j<recommendFoodAdvertList.size();j++) {
+                                    RecommendFoodAdvert historyAdvert = advertHistoryList.get(i);
+                                    RecommendFoodAdvert foodAdvert = recommendFoodAdvertList.get(j);
+                                    if(historyAdvert!=null&&foodAdvert!=null) {
+                                        if(historyAdvert.getId().equals(foodAdvert.getId())) {
+                                            foodAdvert.setSelected(true);
+                                        }
+                                    }
+                                }
+                            }
+//                                        mRecommendAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+                break;
+        }
+        mRecommendAdapter.setData(recommendFoodAdvertList,currentType);
+
+    }
+
+    private void initAdvertList(List<RecommendFoodAdvert> recommendFoodAdvertList) {
+        for(int i = 0;i<advertNameList.size();i++) {
+            String foodName = advertNameList.get(i);
+            int resId = advertResIdList.get(i);
+            RecommendFoodAdvert recommendFoodAdvert = new RecommendFoodAdvert();
+            recommendFoodAdvert.setName(foodName);
+            recommendFoodAdvert.setResId(resId);
+            recommendFoodAdvertList.add(recommendFoodAdvert);
+        }
+    }
+
+    private void initRecoomedList(List<RecommendFoodAdvert> recommendFoodAdvertList) {
+        for(int i = 0;i<recommendNameList.size();i++) {
+            String foodName = recommendNameList.get(i);
+            int resId = recommendResIdList.get(i);
+            RecommendFoodAdvert recommendFoodAdvert = new RecommendFoodAdvert();
+            recommendFoodAdvert.setFood_name(foodName);
+            recommendFoodAdvert.setResId(resId);
+            recommendFoodAdvertList.add(recommendFoodAdvert);
+        }
     }
 
     private void initRoomList() {
@@ -231,99 +361,28 @@ public class RecommendFoodActivity extends BaseActivity implements View.OnClickL
             return;
         }
         // 2.开始投屏
-        String vid = getSelectedListIds(mRecommendAdapter.getData());
-        SmallPlatformByGetIp smallPlatformByGetIp = mSession.getmSmallPlatInfoByIp();
-        SmallPlatInfoBySSDP smallPlatInfoBySSDP = mSession.getSmallPlatInfoBySSDP();
-        TvBoxSSDPInfo tvBoxSSDPInfo = mSession.getTvBoxSSDPInfo();
+        String nameList = getSelectedListIds(mRecommendAdapter.getData());
         showLoadingLayout();
         switch (currentType) {
             case TYPE_ADVERT:
-                proAdvert(vid, smallPlatformByGetIp, smallPlatInfoBySSDP, tvBoxSSDPInfo);
+                proAdvert(nameList);
                 break;
             case TYPE_RECOMMEND_FOODS:
-                proRecmmend(vid, smallPlatformByGetIp, smallPlatInfoBySSDP, tvBoxSSDPInfo,30+"");
-//                AppApi.recommendPro(this,"",currentRoom.getBox_mac(),1000*30+"",vid,this);
+                proRecmmend(nameList,30+"");
                 break;
         }
 
     }
 
-    private void proAdvert(String vid, SmallPlatformByGetIp smallPlatformByGetIp, SmallPlatInfoBySSDP smallPlatInfoBySSDP, TvBoxSSDPInfo tvBoxSSDPInfo) {
-        erroCount = 0;
-        // 1.通过getIp获取的小平台地址进行投屏
-        if(smallPlatformByGetIp!=null&&!TextUtils.isEmpty(smallPlatformByGetIp.getLocalIp())) {
-            String localIp = smallPlatformByGetIp.getLocalIp();
-            String url = "http://"+localIp+":8080";
-            AppApi.adverPro(this,url,currentRoom.getBox_mac(),vid,this);
-        }else {
-            erroCount++;
-        }
-
-        // 2.通过小平台ssdp获取小平台地址进行投屏
-        if(smallPlatInfoBySSDP!=null&&!TextUtils.isEmpty(smallPlatInfoBySSDP.getServerIp())) {
-            String serverIp = smallPlatInfoBySSDP.getServerIp();
-            String url = "http://"+serverIp+":8080";
-            AppApi.adverPro(this,url,currentRoom.getBox_mac(),vid,this);
-        }else {
-            erroCount++;
-        }
-
-        // 3.通过盒子ssdp获取小平台地址进行投屏
-        if(tvBoxSSDPInfo!=null&&!TextUtils.isEmpty(tvBoxSSDPInfo.getServerIp())) {
-            String serverIp = tvBoxSSDPInfo.getServerIp();
-            String url = "http://"+serverIp+":8080";
-            AppApi.adverPro(this,url,currentRoom.getBox_mac(),vid,this);
-        }else {
-            erroCount++;
-            if(erroCount>=3) {
-                hideLoadingLayout();
-                if(AppUtils.isNetworkAvailable(this)) {
-                    showToast("网络超时，请重试");
-                }else {
-                    showToast("网络已断开，请检查");
-                }
-
-            }
-        }
+    private void proAdvert(String videos) {
+        String url = "http://"+currentRoom.getBox_ip()+":8080";
+        AppApi.adverPro(this,url,videos,this);
     }
 
-    private void proRecmmend(String vid, SmallPlatformByGetIp smallPlatformByGetIp, SmallPlatInfoBySSDP smallPlatInfoBySSDP, TvBoxSSDPInfo tvBoxSSDPInfo,String time) {
+    private void proRecmmend(String nameList,String time) {
         erroCount = 0;
-        // 1.通过getIp获取的小平台地址进行投屏
-        if(smallPlatformByGetIp!=null&&!TextUtils.isEmpty(smallPlatformByGetIp.getLocalIp())) {
-            String localIp = smallPlatformByGetIp.getLocalIp();
-            String url = "http://"+localIp+":8080";
-            AppApi.recommendPro(this,url,currentRoom.getBox_mac(),time,vid,this);
-        }else {
-            erroCount++;
-        }
-
-        // 2.通过小平台ssdp获取小平台地址进行投屏
-        if(smallPlatInfoBySSDP!=null&&!TextUtils.isEmpty(smallPlatInfoBySSDP.getServerIp())) {
-            String serverIp = smallPlatInfoBySSDP.getServerIp();
-            String url = "http://"+serverIp+":8080";
-            AppApi.recommendPro(this,url,currentRoom.getBox_mac(),time,vid,this);
-        }else {
-            erroCount++;
-        }
-
-        // 3.通过盒子ssdp获取小平台地址进行投屏
-        if(tvBoxSSDPInfo!=null&&!TextUtils.isEmpty(tvBoxSSDPInfo.getServerIp())) {
-            String serverIp = tvBoxSSDPInfo.getServerIp();
-            String url = "http://"+serverIp+":8080";
-            AppApi.recommendPro(this,url,currentRoom.getBox_mac(),time,vid,this);
-        }else {
-            erroCount++;
-            if(erroCount>=3) {
-                hideLoadingLayout();
-                if(AppUtils.isNetworkAvailable(this)) {
-                    showToast("网络超时，请重试");
-                }else {
-                    showToast("网络已断开，请检查");
-                }
-
-            }
-        }
+        String url = "http://"+currentRoom.getBox_ip()+":8080";
+        AppApi.recommendPro(this,url,nameList,time,this);
     }
 
     private String getSelectedListIds(List<RecommendFoodAdvert> data) {
@@ -334,10 +393,10 @@ public class RecommendFoodActivity extends BaseActivity implements View.OnClickL
                if(foodAdvert.isSelected()) {
                    switch (currentType) {
                        case TYPE_RECOMMEND_FOODS:
-                           sb.append(foodAdvert.getFood_id());
+                           sb.append(foodAdvert.getFood_name());
                            break;
                        case TYPE_ADVERT:
-                           sb.append(foodAdvert.getId());
+                           sb.append(foodAdvert.getName());
                            break;
                    }
                }
@@ -346,10 +405,10 @@ public class RecommendFoodActivity extends BaseActivity implements View.OnClickL
                if(foodAdvert.isSelected()) {
                    switch (currentType) {
                        case TYPE_RECOMMEND_FOODS:
-                           sb.append(foodAdvert.getFood_id()+",");
+                           sb.append(foodAdvert.getFood_name()+",");
                            break;
                        case TYPE_ADVERT:
-                           sb.append(foodAdvert.getId()+",");
+                           sb.append(foodAdvert.getName()+",");
                            break;
                    }
                }
@@ -465,15 +524,13 @@ public class RecommendFoodActivity extends BaseActivity implements View.OnClickL
             currentRoom.setBox_ip(tvBoxSSDPInfo.getBoxIp());
         }
 
-        SmallPlatformByGetIp smallPlatformByGetIp = mSession.getmSmallPlatInfoByIp();
-        SmallPlatInfoBySSDP smallPlatInfoBySSDP = mSession.getSmallPlatInfoBySSDP();
         switch (currentType) {
                 case TYPE_RECOMMEND_FOODS:
-                    proRecmmend(currentFoodAdvert.getFood_id(),smallPlatformByGetIp,smallPlatInfoBySSDP,tvBoxSSDPInfo,60*2+"");
+                    proRecmmend(currentFoodAdvert.getFood_name(),60*2+"");
 //                AppApi.recommendPro(this, "", currentRoom.getBox_mac(), 1000 * 60 * 2 + "", currentFoodAdvert.getFood_id(), this);
                     break;
                 case TYPE_ADVERT:
-                    proAdvert(currentFoodAdvert.getId(), smallPlatformByGetIp, smallPlatInfoBySSDP, tvBoxSSDPInfo);
+                    proAdvert(currentFoodAdvert.getName());
 //                AppApi.adverPro(this, "", currentRoom.getBox_mac(), currentFoodAdvert.getId(), this);
                     break;
             }

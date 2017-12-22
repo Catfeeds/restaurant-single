@@ -32,6 +32,7 @@ import com.savor.resturant.core.ResponseErrorMessage;
 import com.savor.resturant.widget.LoadingDialog;
 import com.savor.resturant.widget.decoration.SpacesItemDecoration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -195,7 +196,7 @@ public class WelComeSetBgActivity extends BaseActivity implements View.OnClickLi
         erroCount = 0;
         // 1.通过getIp获取的小平台地址进行投屏
         if(smallPlatformByGetIp!=null&&!TextUtils.isEmpty(smallPlatformByGetIp.getLocalIp())) {
-            String localIp = smallPlatformByGetIp.getLocalIp();
+            String localIp = currentRoom.getBox_ip();
             String url = "http://"+localIp+":8080";
             showLoadingLayout();
             AppApi.wordPro(this,url,currentRoom.getBox_mac(),templateId,keyWord,this);
@@ -278,11 +279,17 @@ public class WelComeSetBgActivity extends BaseActivity implements View.OnClickLi
         mRoomListView.setLayoutManager(roomLayoutManager);
         roomListAdapter = new RoomListAdapter(this);
         mRoomListView.setAdapter(roomListAdapter);
-        List<RoomInfo> roomList = mSession.getRoomList();
         mRoomListView.addItemDecoration(new SpacesItemDecoration(leftRight, topBottom, getResources().getColor(R.color.white)));
-        if(roomList!=null && roomList.size()>0) {
-            roomListAdapter.setData(roomList);
+        List<RoomInfo> roomList = new ArrayList<>();
+        TvBoxSSDPInfo tvBoxSSDPInfo = mSession.getTvBoxSSDPInfo();
+        if(tvBoxSSDPInfo!=null&&!TextUtils.isEmpty(tvBoxSSDPInfo.getBoxIp())) {
+            RoomInfo roomInfo = new RoomInfo();
+            roomInfo.setBox_ip(tvBoxSSDPInfo.getBoxIp());
+            roomInfo.setBox_name("演示版电视");
+            roomInfo.setBox_mac("FCD5D900B8B6");
+            roomList.add(roomInfo);
         }
+        roomListAdapter.setData(roomList);
     }
 
     @Override
@@ -335,19 +342,19 @@ public class WelComeSetBgActivity extends BaseActivity implements View.OnClickLi
             case GET_WORD_PRO_JSON:
                 HotelBean hotel = mSession.getHotelBean();
                 ShowMessage.showToast(this,"投屏成功！");
-                AppApi.reportLog(context,
-                        hotel.getHotel_id()+"",
-                        "",hotel.getInvitation(),
-                        hotel.getTel(),
-                        currentRoom.getRoom_id(),
-                        "1",
-                        "1",
-                        "120",
-                        "5",
-                        CurrentTemplateId,
-                        keyWord,
-                        this
-                        );
+//                AppApi.reportLog(context,
+//                        hotel.getHotel_id()+"",
+//                        "",hotel.getInvitation(),
+//                        hotel.getTel(),
+//                        currentRoom.getRoom_id(),
+//                        "1",
+//                        "1",
+//                        "120",
+//                        "5",
+//                        CurrentTemplateId,
+//                        keyWord,
+//                        this
+//                        );
                 break;
 
         }
@@ -422,19 +429,19 @@ public class WelComeSetBgActivity extends BaseActivity implements View.OnClickLi
 
     private void errorLog(){
         HotelBean hotel = mSession.getHotelBean();
-        AppApi.reportLog(context,
-                hotel.getHotel_id()+"",
-                "",hotel.getInvitation(),
-                hotel.getTel(),
-                currentRoom.getRoom_id(),
-                "1",
-                "0",
-                "120",
-                "5",
-                CurrentTemplateId,
-                keyWord,
-                this
-        );
+//        AppApi.reportLog(context,
+//                hotel.getHotel_id()+"",
+//                "",hotel.getInvitation(),
+//                hotel.getTel(),
+//                currentRoom.getRoom_id(),
+//                "1",
+//                "0",
+//                "120",
+//                "5",
+//                CurrentTemplateId,
+//                keyWord,
+//                this
+//        );
     }
 
 }

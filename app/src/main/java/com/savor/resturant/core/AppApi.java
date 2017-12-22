@@ -103,7 +103,6 @@ public class AppApi {
         POST_DELETE_ORDER_JSON,
         /**更新预订信息服务*/
         POST_UPDATE_ORDER_SERVICE_JSON,
-
     }
 
     /**
@@ -528,39 +527,39 @@ public class AppApi {
     }
 
     /**宣传片投屏*/
-    public static void adverPro(Context context,String url,String boxMac,String vid,ApiRequestListener handler) {
+    public static void adverPro(Context context,String url,String videos,ApiRequestListener handler) {
 //        url = "http://192.168.1.104:8080";
-        final HashMap<String, Object> params = new HashMap<String, Object>();
+        final HashMap<String, String> params = new HashMap<>();
+        final HashMap<String, Object> bodyParams = new HashMap<>();
         params.put("deviceId", STIDUtil.getDeviceId(context));
-        params.put("boxMac", boxMac);
         params.put("deviceName", Build.MODEL);
-        params.put("vid", vid);
-        new AppServiceOk(context,url+"/small/command/screend/adv",Action.GET_ADVERT_PRO_JSON,handler,params).get();
+        params.put("videos", videos);
+        new AppServiceOk(context,formatProUrl(context,url+"/vod?",params),Action.GET_ADVERT_PRO_JSON,handler,bodyParams).get();
 //        new AppServiceOk(context,"http://"+url+":8080/command/getHotelBox",Action.GET_HOTEL_BOX_JSON,handler,params).get();
     }
 
     /**推荐菜投屏*/
-    public static void recommendPro(Context context,String url,String boxMac,String interval,String specialtyId,ApiRequestListener handler) {
+    public static void recommendPro(Context context,String url,String name,String interval,ApiRequestListener handler) {
 //        url = "http://192.168.1.104:8080";
-        final HashMap<String, Object> params = new HashMap<String, Object>();
-        params.put("deviceId", STIDUtil.getDeviceId(context));
-        params.put("boxMac", boxMac);
+        final HashMap<String, String> params = new HashMap<String, String>();
+        params.put("name", name);
         params.put("deviceName", Build.MODEL);
-        params.put("specialtyId", specialtyId);
         params.put("interval", interval);
-        new AppServiceOk(context,url+"/small/command/screend/recommend",Action.GET_RECOMMEND_PRO_JSON,handler,params).get();
+
+        final HashMap<String, Object> bodyparams = new HashMap<String, Object>();
+        new AppServiceOk(context,formatProUrl(context,url+"/specialty?",params),Action.GET_RECOMMEND_PRO_JSON,handler,bodyparams).get();
 //        new AppServiceOk(context,"http://"+url+":8080/command/getHotelBox",Action.GET_HOTEL_BOX_JSON,handler,params).get();
     }
     /**欢迎词投屏*/
     public static void wordPro(Context context,String url,String boxMac,String templateId,String word,ApiRequestListener handler) {
 //        url = "http://192.168.1.104:8080";
-        final HashMap<String, Object> params = new HashMap<String, Object>();
-        params.put("deviceId", STIDUtil.getDeviceId(context));
+        final HashMap<String, String> params = new HashMap<>();
+        final HashMap<String, String> bodyParams = new HashMap<>();
         params.put("boxMac", boxMac);
         params.put("deviceName", Build.MODEL);
         params.put("templateId", templateId);
         params.put("word", word);
-        new AppServiceOk(context,url+"/small/command/screend/word",Action.GET_WORD_PRO_JSON,handler,params).get();
+        new AppServiceOk(context,formatProUrl(context,url+"/greeting?",params),Action.GET_WORD_PRO_JSON,handler,bodyParams).get();
 //        new AppServiceOk(context,"http://"+url+":8080/command/getHotelBox",Action.GET_HOTEL_BOX_JSON,handler,params).get();
     }
 
