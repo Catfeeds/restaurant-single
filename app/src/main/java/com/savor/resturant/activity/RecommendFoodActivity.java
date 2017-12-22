@@ -677,51 +677,14 @@ public class RecommendFoodActivity extends BaseActivity implements View.OnClickL
 
         switch (method) {
             case GET_RECOMMEND_PRO_JSON:
-                erroCount++;
-                if(erroCount<3)
-                    return;
-
-                List<RecommendFoodAdvert> selectedList = getSelectedList(mRecommendAdapter.getData());
-                if(method == AppApi.Action.GET_RECOMMEND_PRO_JSON) {
-                    String time;
-                    if(currentProType == TYPE_PRO_MULTI) {
-                        time = "30";
-                    }else {
-                        time = 60*2+"";
-                    }
-                }else if(method == AppApi.Action.GET_ADVERT_PRO_JSON) {
-                }
 
                 hideLoadingLayout();
                 if(obj instanceof ResponseErrorMessage) {
                     ResponseErrorMessage message = (ResponseErrorMessage) obj;
                     int code = message.getCode();
                     String msg = message.getMessage();
-                    if(10008 == code) {
-                        String[] split = msg.split(",");
-                        List<String> ids = Arrays.asList(split);
-                        StringBuilder sb = new StringBuilder();
-                        List<RecommendFoodAdvert> data = mRecommendAdapter.getData();
-                        if(ids.size()>0&&data!=null&&data.size()>0) {
-                            for(int m = 0;m<ids.size();m++) {
-                                String id = ids.get(m);
-                                for(int i = 0;i<data.size();i++) {
-                                    RecommendFoodAdvert foodAdvert = data.get(i);
-                                    if(id.equals(foodAdvert.getFood_id())) {
-                                        if(m==ids.size()-1) {
-                                            sb.append(foodAdvert.getFood_name());
-                                        }else {
-                                            sb.append(foodAdvert.getFood_name()+",");
-                                        }
-                                    }
-                                }
-                            }
-                            String hint = "您选择的\""+sb.toString()+"\"在电视中不存在，无法进行投屏";
-                            showToast(hint);
-                        }
-                    }else{
-                        showToast(msg);
-                    }
+
+                    showToast(msg);
                 }else if(obj == AppApi.ERROR_TIMEOUT) {
                     showToast("网络超时，请重试");
                 }else if(obj == AppApi.ERROR_NETWORK_FAILED) {
@@ -729,39 +692,14 @@ public class RecommendFoodActivity extends BaseActivity implements View.OnClickL
                 }
                 break;
             case GET_ADVERT_PRO_JSON:
-                erroCount++;
-                if(erroCount<3)
-                    return;
+
                 hideLoadingLayout();
                 if(obj instanceof ResponseErrorMessage) {
                     ResponseErrorMessage message = (ResponseErrorMessage) obj;
                     int code = message.getCode();
                     String msg = message.getMessage();
-                    if(10008 == code) {
-                        String[] split = msg.split(",");
-                        List<String> ids = Arrays.asList(split);
-                        StringBuilder sb = new StringBuilder();
-                        List<RecommendFoodAdvert> data = mRecommendAdapter.getData();
-                        if(ids.size()>0&&data!=null&&data.size()>0) {
-                            for(int m = 0;m<ids.size();m++) {
-                                String id = ids.get(m);
-                                for(int i = 0;i<data.size();i++) {
-                                    RecommendFoodAdvert foodAdvert = data.get(i);
-                                    if(id.equals(foodAdvert.getId())) {
-                                        if(m==ids.size()-1) {
-                                            sb.append(foodAdvert.getChinese_name());
-                                        }else {
-                                            sb.append(foodAdvert.getChinese_name()+",");
-                                        }
-                                    }
-                                }
-                            }
-                            String hint = "您选择的\""+sb.toString()+"\"在电视中不存在，无法进行投屏";
-                            showToast(hint);
-                        }
-                    }else{
-                        showToast(msg);
-                    }
+
+                    showToast(msg);
                 }else if(obj == AppApi.ERROR_TIMEOUT) {
                     showToast("网络超时，请重试");
                 }else if(obj == AppApi.ERROR_NETWORK_FAILED) {

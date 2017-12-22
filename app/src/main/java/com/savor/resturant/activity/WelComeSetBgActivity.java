@@ -193,36 +193,10 @@ public class WelComeSetBgActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void proWord(String templateId,SmallPlatformByGetIp smallPlatformByGetIp, SmallPlatInfoBySSDP smallPlatInfoBySSDP, TvBoxSSDPInfo tvBoxSSDPInfo){
-        erroCount = 0;
-        // 1.通过getIp获取的小平台地址进行投屏
-        if(smallPlatformByGetIp!=null&&!TextUtils.isEmpty(smallPlatformByGetIp.getLocalIp())) {
-            String localIp = currentRoom.getBox_ip();
-            String url = "http://"+localIp+":8080";
-            showLoadingLayout();
-            AppApi.wordPro(this,url,currentRoom.getBox_mac(),templateId,keyWord,this);
-        }else {
-            erroCount++;
-        }
-
-        // 2.通过小平台ssdp获取小平台地址进行投屏
-        if(smallPlatInfoBySSDP!=null&&!TextUtils.isEmpty(smallPlatInfoBySSDP.getServerIp())) {
-            String serverIp = smallPlatInfoBySSDP.getServerIp();
-            String url = "http://"+serverIp+":8080";
-            showLoadingLayout();
-            AppApi.wordPro(this,url,currentRoom.getBox_mac(),templateId,keyWord,this);
-        }else {
-            erroCount++;
-        }
-
-        // 3.通过盒子ssdp获取小平台地址进行投屏
-        if(tvBoxSSDPInfo!=null&&!TextUtils.isEmpty(tvBoxSSDPInfo.getServerIp())) {
-            String serverIp = tvBoxSSDPInfo.getServerIp();
-            String url = "http://"+serverIp+":8080";
-            showLoadingLayout();
-            AppApi.wordPro(this,url,currentRoom.getBox_mac(),templateId,keyWord,this);
-        }else {
-            erroCount++;
-        }
+        String localIp = currentRoom.getBox_ip();
+        String url = "http://"+localIp+":8080";
+        showLoadingLayout();
+        AppApi.wordPro(this,url,currentRoom.getBox_mac(),templateId,keyWord,this);
     }
     private void initTitleBar() {
        // tv_center.setText("请选择投屏包间");
