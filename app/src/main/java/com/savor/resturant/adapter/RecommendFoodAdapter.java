@@ -27,7 +27,7 @@ import java.util.List;
 public class RecommendFoodAdapter extends RecyclerView.Adapter<RecommendFoodAdapter.RecommendHolder> {
     private final Context mContext;
     private List<RecommendFoodAdvert> mData;
-    private static final double IMAGE_SCALE = 0.7164179104477612;
+    private static final double IMAGE_SCALE = 0.5625;
     private OnSingleProBtnClickListener onSingleProBtnClickListener;
     private OnCheckStateChangeListener onCheckStateChangeListener;
     private RecommendFoodActivity.OperationType type;

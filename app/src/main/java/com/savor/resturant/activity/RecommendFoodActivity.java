@@ -80,18 +80,8 @@ public class RecommendFoodActivity extends BaseActivity implements View.OnClickL
             add("江南熟醉大闸蟹");
             add("京葱山药烧海参");
             add("海鲜刺身拼盘");
-        }
-    };
-
-    /**
-     * 宣传片名称列表
-     */
-    private static final List<String> advertNameList = new ArrayList<String>() {
-        {
-            add("1");
-            add("2");
-            add("3");
-            add("4");
+            add("挪威三文鱼");
+            add("功夫汤");
         }
     };
 
@@ -106,18 +96,36 @@ public class RecommendFoodActivity extends BaseActivity implements View.OnClickL
                     add(R.drawable.jiangnanshuzuidazhaxie);
                     add(R.drawable.jingcongshanyaoshaohaishen);
                     add(R.drawable.haixiancishenpinpan);
+                    add(R.drawable.nuoweisanwenyu);
+                    add(R.drawable.gongfutang);
                 }
             };
+
+    /**
+     * 宣传片名称列表
+     */
+    private static final List<String> advertNameList = new ArrayList<String>() {
+        {
+            add("花家怡园");
+            add("淮扬府");
+            add("权茂北京菜");
+            add("唐宫海鲜舫");
+            add("新荣记");
+            add("中发源");
+        }
+    };
 
     /**
      * 宣传片图片资源列表
      */
     private static final List<Integer> advertResIdList = new ArrayList<Integer>() {
         {
-            add(R.drawable.haixianpinpan);
-            add(R.drawable.jiangnanshuzuidazhaxie);
-            add(R.drawable.jingcongshanyaoshaohaishen);
-            add(R.drawable.haixiancishenpinpan);
+            add(R.drawable.huajiayiyuan);
+            add(R.drawable.huaiyangfu);
+            add(R.drawable.quanmaobeijingcai);
+            add(R.drawable.tanggong);
+            add(R.drawable.xinrongji);
+            add(R.drawable.zhongfayuan);
         }
     };
 
