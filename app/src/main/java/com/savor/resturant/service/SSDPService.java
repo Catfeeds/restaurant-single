@@ -78,13 +78,13 @@ public class SSDPService extends IntentService {
             operation_type = null;
         }
         ProjectionManager.getInstance().setLookingSSDP(true);
-        stopFirstUserServiceDelayed();
+//        stopFirstUserServiceDelayed();
         startReceive();
     }
-    private void stopFirstUserServiceDelayed() {
-        mHandler.removeMessages(CLOSE_FIRSTUSE_SERVICE);
-        mHandler.sendEmptyMessageDelayed(CLOSE_FIRSTUSE_SERVICE,20*1000);
-    }
+//    private void stopFirstUserServiceDelayed() {
+//        mHandler.removeMessages(CLOSE_FIRSTUSE_SERVICE);
+//        mHandler.sendEmptyMessageDelayed(CLOSE_FIRSTUSE_SERVICE,20*1000);
+//    }
 
     private void startReceive() {
         WifiManager wm = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
@@ -168,8 +168,10 @@ public class SSDPService extends IntentService {
         } finally {
             closeSocketReceive();
         }
-
-        multicastLock.release();
+        try {
+            multicastLock.release();
+        }catch (Exception e){
+        }
     }
 
     private void sendSpFoundReceiver() {
@@ -227,5 +229,9 @@ public class SSDPService extends IntentService {
         super.onDestroy();
         isLooping = false;
         ProjectionManager.getInstance().setLookingSSDP(false);
+
+        try {
+            multicastLock.release();
+        }catch (Exception e){}
     }
 }

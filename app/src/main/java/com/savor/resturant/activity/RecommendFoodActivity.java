@@ -221,11 +221,9 @@ public class RecommendFoodActivity extends BaseActivity implements View.OnClickL
 
                 RecommendProHistory recommendListHistory = mSession.getRecommendListHistory();
                 if(recommendListHistory!=null) {
-                    HotelBean hBean = recommendListHistory.getHotelBean();
                     List<RecommendFoodAdvert> recmmendHistoryList = recommendListHistory.getRecmmendList();
-                    if(hBean!=null&&recmmendHistoryList!=null&&recmmendHistoryList.size()>0) {
-                        String hotel_id = hBean.getHotel_id();
-                        if(hotelBean.getHotel_id().equals(hotel_id)) {
+                    if(recmmendHistoryList!=null&&recmmendHistoryList.size()>0) {
+//                        if(hotelBean.getHotel_id().equals(hotel_id)) {
                             for(int i = 0;i<recmmendHistoryList.size();i++) {
                                 for(int j = 0;j<recommendFoodAdvertList.size();j++) {
                                     RecommendFoodAdvert historyAdvert = recmmendHistoryList.get(i);
@@ -238,7 +236,7 @@ public class RecommendFoodActivity extends BaseActivity implements View.OnClickL
                                 }
                             }
 //                                        mRecommendAdapter.notifyDataSetChanged();
-                        }
+//                        }
                     }
                 }
                 break;
@@ -246,17 +244,17 @@ public class RecommendFoodActivity extends BaseActivity implements View.OnClickL
                 initAdvertList(recommendFoodAdvertList);
                 AdvertProHistory advertProHistory = mSession.getAdvertProHistory();
                 if(advertProHistory!=null) {
-                    HotelBean hBean = advertProHistory.getHotelBean();
+//                    HotelBean hBean = advertProHistory.getHotelBean();
                     List<RecommendFoodAdvert> advertHistoryList = advertProHistory.getAdvertList();
-                    if(hBean!=null&&advertHistoryList!=null&&advertHistoryList.size()>0) {
-                        String hotel_id = hBean.getHotel_id();
-                        if(hotelBean.getHotel_id().equals(hotel_id)) {
+                    if(advertHistoryList!=null&&advertHistoryList.size()>0) {
+//                        String hotel_id = hBean.getHotel_id();
+//                        if(hotelBean.getHotel_id().equals(hotel_id)) {
                             for(int i = 0;i<advertHistoryList.size();i++) {
                                 for(int j = 0;j<recommendFoodAdvertList.size();j++) {
                                     RecommendFoodAdvert historyAdvert = advertHistoryList.get(i);
                                     RecommendFoodAdvert foodAdvert = recommendFoodAdvertList.get(j);
                                     if(historyAdvert!=null&&foodAdvert!=null) {
-                                        if(historyAdvert.getId().equals(foodAdvert.getId())) {
+                                        if(historyAdvert.getName().equals(foodAdvert.getName())) {
                                             foodAdvert.setSelected(true);
                                         }
                                     }
@@ -264,7 +262,7 @@ public class RecommendFoodActivity extends BaseActivity implements View.OnClickL
                             }
 //                                        mRecommendAdapter.notifyDataSetChanged();
                         }
-                    }
+//                    }
                 }
                 break;
         }
@@ -573,21 +571,6 @@ public class RecommendFoodActivity extends BaseActivity implements View.OnClickL
                 hideLoadingLayout();
                 List<RecommendFoodAdvert> data = mRecommendAdapter.getData();
                 List<RecommendFoodAdvert> selectedList = getSelectedList(data);
-                if(method == AppApi.Action.GET_RECOMMEND_PRO_JSON) {
-                    String time;
-                    if(currentProType == TYPE_PRO_MULTI) {
-                        time = "30";
-                    }else {
-                        time = 60*2+"";
-                    }
-                }else if(method == AppApi.Action.GET_ADVERT_PRO_JSON) {
-                    String time;
-                    if(currentProType == TYPE_PRO_MULTI) {
-                        time = "30";
-                    }else {
-                        time = 60*2+"";
-                    }
-                }
                 hotelBean = mSession.getHotelBean();
                 if(currentProType == TYPE_PRO_MULTI) {
                     switch (currentType) {
