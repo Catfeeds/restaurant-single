@@ -534,7 +534,7 @@ public class AppApi {
         params.put("deviceId", STIDUtil.getDeviceId(context));
         params.put("deviceName", Build.MODEL);
         params.put("videos", videos);
-        new AppServiceOk(context,formatProUrl(context,url+"/vod?",params),Action.GET_ADVERT_PRO_JSON,handler,bodyParams).get();
+        new AppServiceOk(context,formatProUrl(context,url+"/adv?",params),Action.GET_ADVERT_PRO_JSON,handler,bodyParams).get();
 //        new AppServiceOk(context,"http://"+url+":8080/command/getHotelBox",Action.GET_HOTEL_BOX_JSON,handler,params).get();
     }
 
